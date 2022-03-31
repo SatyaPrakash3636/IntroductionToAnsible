@@ -1,0 +1,6 @@
+---
+  - ansible.builtin.import_playbook: yum-update.yaml
+  - ansible.builtin.import_playbook: install-services.yaml
+  - ansible.builtin.import_playbook: setup-app.yaml
+  - ansible.builtin.import_playbook: setup-lb.yaml
+  - ansible.builtin.import_playbook: check-status.yaml

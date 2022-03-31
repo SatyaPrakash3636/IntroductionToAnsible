@@ -1,0 +1,16 @@
+---
+- name: Check service status
+  hosts: webservers:loadbalancers
+  become: true
+  tasks:
+    - name: Check Apache service
+      ansible.builtin.command:
+        cmd: service httpd status
+      args:
+        warn: no
+      changed_when: false
+
+    - name: Failure handling
+      ansible.builtin.command:
+        cmd: /bin/false
+      ignore_errors: true

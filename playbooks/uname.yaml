@@ -1,0 +1,14 @@
+---
+- name: Getting OS and hostname
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Check OS name and hostname
+      ansible.builtin.shell: uname;hostname
+      register: output
+
+    - name: Printing output
+      ansible.builtin.debug:
+        var: output.stdout_lines
+
+...

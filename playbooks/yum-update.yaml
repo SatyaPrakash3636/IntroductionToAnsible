@@ -1,0 +1,9 @@
+---
+- name: Updating all packages
+  hosts: dev
+  become: true
+  tasks:
+    - name: Upgrading all packages on {{ ansible_host }}
+      ansible.builtin.yum:
+        name: '*'
+        state: latest

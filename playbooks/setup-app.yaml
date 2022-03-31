@@ -1,0 +1,48 @@
+---
+- name: Copy config files to webservers
+  hosts: webservers
+  become: true
+
+  vars:
+    path_to_app: "/var/www/html"
+
+  vars_prompt:
+    - name: list_content
+      prompt: "Do you want to list files? (yes/no)"
+  tasks:
+    - name: Copy index.php
+      ansible.builtin.copy:
+        src: index.php
+        dest: "{{ path_to_app }}"
+        mode: 0755
+
+    - name: Create simple info page
+      ansible.builtin.copy:
+        dest: "{{ path_to_app }}/info.php"
+        content: "<h1>Info about our web servers {{ ansible_hostname }}</h>"
+
+    - name: List all file under {{ path_to_app }}
+      ansible.builtin.command:
+        cmd: ls -ltra {{ path_to_app }}
+      register: dir_out
+      when: list_content == 'yes'
+      tags: print
+
+    - name: Printing content of {{ path_to_app }}
+      ansible.builtin.debug:
+        var: dir_out.stdout_lines
+      when: list_content == 'yes'
+      tags: print
+    
+    - name: Configure php.ini file
+      ansible.builtin.lineinfile:
+        path: /etc/php.ini
+        regexp: ^short_open_tag
+        line: 'short_open_tag=on'
+      notify: Restart Apache
+
+  handlers:
+  - name: Restart Apache
+    service:
+      name: httpd
+      state: restarted

@@ -1,0 +1,13 @@
+---
+- name: Pinging all servers
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Pinging host
+    ping:
+      data: Server is up
+    register: output
+
+  - name: Printing output
+    debug:
+      var: output.ping

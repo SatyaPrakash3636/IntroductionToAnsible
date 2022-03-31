@@ -1,0 +1,19 @@
+---
+- name: Configure Load Balancer
+  hosts: loadbalancers
+  become: true
+  tasks:
+    - name: Place lb.config file
+      ansible.builtin.template:
+        src: lb-config.j2
+        dest: /etc/httpd/conf.d/lb.conf
+        owner: bin
+        group: wheel
+        mode: 0644
+      notify: Restart Apache
+
+  handlers:
+    - name: Restart Apache
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
